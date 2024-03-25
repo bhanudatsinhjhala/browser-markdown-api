@@ -4,8 +4,6 @@ import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { Defaults } from './default.config';
 
-console.log('🚀 ~ winstonOptions ~ process.env.NODE_ENV:', process.env.NODE_ENV);
-
 /**
  * Description - Logger Middleware
  * @returns
@@ -13,7 +11,7 @@ console.log('🚀 ~ winstonOptions ~ process.env.NODE_ENV:', process.env.NODE_EN
 export const winstonOptions = (): WinstonModuleOptions => {
   const logsFilePath = path.join(path.resolve(), `./logs/`);
   let dailyRotateTransport;
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV !== 'production') {
     dailyRotateTransport = new DailyRotateFile({
       filename: logsFilePath + '%DATE%.log',
       datePattern: 'YYYY-MM-DD',
