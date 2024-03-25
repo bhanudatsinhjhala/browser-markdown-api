@@ -4,6 +4,8 @@ import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import { Defaults } from './default.config';
 
+console.log('🚀 ~ winstonOptions ~ process.env.NODE_ENV:', process.env.NODE_ENV);
+
 /**
  * Description - Logger Middleware
  * @returns
