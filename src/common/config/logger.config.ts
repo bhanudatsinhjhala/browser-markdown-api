@@ -20,26 +20,41 @@ export const winstonOptions = (): WinstonModuleOptions => {
     level: 'debug',
     format: winston.format.combine(winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), winston.format.json()),
     transports: [
-      new winston.transports.File({
-        filename: Defaults.COMBINED_LOG_PATH,
-        maxsize: 1048576,
-      }),
-      new winston.transports.File({
-        filename: Defaults.ERROR_LOG_PATH,
-        level: 'error',
-        maxsize: 83_88_608,
-      }),
-      dailyRotateTransport,
-      new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.colorize(),
-          winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-          utilities.format.nestLike('Browser Markdown', {
-            colors: true,
-            prettyPrint: false,
-          }),
-        ),
-      }),
+      ...(process.env.NODE_ENV === 'production'
+        ? [
+            new winston.transports.Console({
+              format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                utilities.format.nestLike('Browser Markdown', {
+                  colors: true,
+                  prettyPrint: false,
+                }),
+              ),
+            }),
+          ]
+        : [
+            new winston.transports.File({
+              filename: Defaults.COMBINED_LOG_PATH,
+              maxsize: 1048576,
+            }),
+            new winston.transports.File({
+              filename: Defaults.ERROR_LOG_PATH,
+              level: 'error',
+              maxsize: 83_88_608,
+            }),
+            dailyRotateTransport,
+            new winston.transports.Console({
+              format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                utilities.format.nestLike('Browser Markdown', {
+                  colors: true,
+                  prettyPrint: false,
+                }),
+              ),
+            }),
+          ]),
     ],
   };
 };
