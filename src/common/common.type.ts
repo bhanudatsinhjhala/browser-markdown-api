@@ -5,3 +5,5 @@ export interface CommonResponse<T = any> {
   data: T | [];
   error: T | [];
 }
+
+export type CommonMessageResponse = CommonResponse<[]>;

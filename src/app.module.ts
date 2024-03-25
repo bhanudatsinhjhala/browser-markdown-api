@@ -27,8 +27,6 @@ import { CommonModule } from './common/common.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
       }),
     }),
     MongooseModule.forFeature([
