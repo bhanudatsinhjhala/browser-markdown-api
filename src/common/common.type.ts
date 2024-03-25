@@ -6,4 +6,9 @@ export interface CommonResponse<T = any> {
   error: T | [];
 }
 
+export interface IEnvConfig {
+  PORT: string;
+  MONGODB_URI: string;
+}
+
 export type CommonMessageResponse = CommonResponse<[]>;
