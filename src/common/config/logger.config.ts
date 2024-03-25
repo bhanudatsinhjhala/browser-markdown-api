@@ -10,10 +10,13 @@ import { Defaults } from './default.config';
  */
 export const winstonOptions = (): WinstonModuleOptions => {
   const logsFilePath = path.join(path.resolve(), `./logs/`);
-  const dailyRotateTransport = new DailyRotateFile({
-    filename: logsFilePath + '%DATE%.log',
-    datePattern: 'YYYY-MM-DD',
-  });
+  let dailyRotateTransport;
+  if (process.env.NODE_ENV === 'production') {
+    dailyRotateTransport = new DailyRotateFile({
+      filename: logsFilePath + '%DATE%.log',
+      datePattern: 'YYYY-MM-DD',
+    });
+  }
 
   return {
     exitOnError: false,
@@ -43,17 +46,32 @@ export const winstonOptions = (): WinstonModuleOptions => {
               level: 'error',
               maxsize: 83_88_608,
             }),
-            dailyRotateTransport,
-            new winston.transports.Console({
-              format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-                utilities.format.nestLike('Browser Markdown', {
-                  colors: true,
-                  prettyPrint: false,
-                }),
-              ),
-            }),
+            ...(dailyRotateTransport !== undefined
+              ? [
+                  dailyRotateTransport,
+                  new winston.transports.Console({
+                    format: winston.format.combine(
+                      winston.format.colorize(),
+                      winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                      utilities.format.nestLike('Browser Markdown', {
+                        colors: true,
+                        prettyPrint: false,
+                      }),
+                    ),
+                  }),
+                ]
+              : [
+                  new winston.transports.Console({
+                    format: winston.format.combine(
+                      winston.format.colorize(),
+                      winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+                      utilities.format.nestLike('Browser Markdown', {
+                        colors: true,
+                        prettyPrint: false,
+                      }),
+                    ),
+                  }),
+                ]),
           ]),
     ],
   };
