@@ -1,7 +1,7 @@
 import { WinstonModuleOptions, utilities } from 'nest-winston';
-import * as winston from 'winston';
-import * as winstonDailyRotate from 'winston-daily-rotate-file';
 import * as path from 'path';
+import * as winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 import { Defaults } from './default.config';
 
 /**
@@ -10,7 +10,7 @@ import { Defaults } from './default.config';
  */
 export const winstonOptions = (): WinstonModuleOptions => {
   const logsFilePath = path.join(path.resolve(), `./logs/`);
-  const dailyRotateTransport = new winstonDailyRotate({
+  const dailyRotateTransport = new DailyRotateFile({
     filename: logsFilePath + '%DATE%.log',
     datePattern: 'YYYY-MM-DD',
   });
@@ -18,10 +18,7 @@ export const winstonOptions = (): WinstonModuleOptions => {
   return {
     exitOnError: false,
     level: 'debug',
-    format: winston.format.combine(
-      winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-      winston.format.json(),
-    ),
+    format: winston.format.combine(winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), winston.format.json()),
     transports: [
       new winston.transports.File({
         filename: Defaults.COMBINED_LOG_PATH,
